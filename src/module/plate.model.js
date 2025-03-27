@@ -31,7 +31,7 @@ Plate.init({
         type: DataTypes.STRING,
         allowNull:false
     },
-    plate_cat:{
+    plate_cat:{ 
         type: DataTypes.STRING,
         allowNull:false
     },

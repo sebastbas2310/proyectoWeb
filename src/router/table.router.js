@@ -13,28 +13,51 @@ router.get("/Table", async(req,res) =>{
 }) 
 
 router.post("/table", async (req,res) =>{
-    try{
-        await Table.sync()
+    const dataTable = req.body
+    await Table.sync()
     const createTable = await Table.create({
-        table_size: faker.number.int({ min: 1, max: 10 }),
-        table_disp: faker.datatype.boolean()  
+        table_size: dataTable.table_size,
+        table_disp: dataTable.table_disp  
     }) 
     res.status(201).json({
         ok:true,
         status:201,
         message: "Created product"
     })
-    }
-    catch(error){
-        return res.status(4).json({error:"El token ha expirado"});
-    }
 })
 
-router.put("/table", (req,res) =>{
-    res.send("I am a router")
+router.put("/table/:table_id", async(req,res) =>{
+    const id = req.params.table_id
+    const dataTable = req.body
+    const updateTable = await Table.update(
+        {
+            table_size: dataTable.table_size,
+            table_disp: dataTable.table_disp 
+        },
+        {
+            where: {
+                table_id: id,
+            },
+        }
+    );
+    res.status(200).json({
+        ok: true,
+        status: 200,
+        body: updateTable,
+    });
 })
 
-router.delete("/table", (req,res) =>{
-    res.send("I am a router")
+router.delete("/table/:table_id", async (req,res) =>{
+    const id = req.params.table_id;
+    const deleteTable = await Table.destroy({
+        where: {
+            table_id: id,
+        },
+    });
+    res.status(200).json({
+        ok: true,
+        status: 200,
+        body: deleteTable,
+    });
 })
 module.exports = router

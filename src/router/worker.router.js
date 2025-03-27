@@ -17,11 +17,12 @@ router.get("/worker", (req,res) =>{
 })
 
 router.post("/worker", async (req,res) =>{
+    const dataWorker = req.body
     await  worker.sync()
     const createWorker = await worker.create({
-        worker_name: faker.person.fullName(),
-        worker_rol: faker.person.jobType(),
-        salary: faker.number.float({ min: 1000, max: 5000 })
+        worker_name: dataWorker.worker_name,
+        worker_rol: dataWorker.worker_rol,
+        salary: dataWorker.salary
     }) 
     res.status(201).json({
         ok:true,
@@ -30,11 +31,39 @@ router.post("/worker", async (req,res) =>{
     })
 })
 
-router.put("/worker", (req,res) =>{
-    res.send("I am a router")
+router.put("/worker/:worker_id", async (req,res) =>{
+    const id = req.params.worker_id
+    const dataWorker = req.body
+    const updateWorker = await worker.update(
+        {
+        worker_name: dataWorker.worker_name,
+        worker_rol: dataWorker.worker_rol,
+        salary: dataWorker.salary   
+        },
+        {
+            where: {
+                worker_id: id,
+            },
+        }
+    );
+    res.status(200).json({
+        ok: true,
+        status: 200,
+        body: updateWorker,
+    });
 })
 
-router.delete("/worker", (req,res) =>{
-    res.send("I am a router")
+router.delete("/worker/:worker_id", async (req,res) =>{
+    const id = req.params.worker_id;
+    const deleteWorker = await worker.destroy({
+        where: {
+            worker_id: id,
+        },
+    });
+    res.status(200).json({
+        ok: true,
+        status: 200,
+        body: deleteWorker,
+    });
 })
 module.exports = router
