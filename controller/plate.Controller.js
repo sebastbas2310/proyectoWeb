@@ -1,6 +1,4 @@
-const router = require("express").Router()
-const { faker } = require("@faker-js/faker")
-
+/*const router = require("express").Router()
 const menu = require("../module/plate.model")
 
 router.get("/menu", async(req,res) =>{
@@ -71,4 +69,4 @@ router.delete("/menu/:plate_id", async (req, res) => {
     });
 });
 
-module.exports = router
+module.exports = router*/

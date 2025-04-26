@@ -1,7 +1,7 @@
 const router = require("express").Router()
 const { faker } = require("@faker-js/faker")
 
-const ingredient = require("../module/ingredient.model")
+const ingredient = require("../models/ingredient")
 
 router.get("/ingredient", async(req,res) =>{
     const Ingredient = await ingredient.findAll()
@@ -54,7 +54,7 @@ router.delete("/ingredient/:ingredient_id", async (req,res) =>{
     const deleteIngredient = await ingredient.destroy({
         where: {
             ingredient_id: id,
-        },
+        }, 
     });
     res.status(200).json({
         ok: true,

@@ -1,4 +1,4 @@
-const router = require("express").Router()
+/*const router = require("express").Router()
 const { faker } = require("@faker-js/faker")
 
 const Table = require("../module/table.model")
@@ -60,4 +60,4 @@ router.delete("/table/:table_id", async (req,res) =>{
         body: deleteTable,
     });
 })
-module.exports = router
+module.exports = router*/
