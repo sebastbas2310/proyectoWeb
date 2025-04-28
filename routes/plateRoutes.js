@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const pedidoController = require("../controller/pedidoController");
-const authService = require("../services/authService");
+const plateController = require("../controller/plateController");
+//const authService = require("../services/authService");
 
-router.post("/", authService, pedidoController.addPedido)
-router.get("/", authService, pedidoController.getPedido)
+router.get("/", plateController.getPlate);
+router.post("/addPlate", plateController.addPlate);
 
 
 module.exports= router;

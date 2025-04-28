@@ -7,9 +7,10 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const bodyParser = require("body-parser")
-//const usuarioRoutes = require("./routes/usuarioRoutes");
-//const pedidoRoutes = require("./routes/pedidoRoutes");
-//const authRoutes = require("./routes/authRoutes");
+const plateRoutes = require("./routes/plateRoutes");
+const tableRoutes = require("./routes/tableRoutes");
+const ingredientRoutes = require("./routes/ingredientsRoutes");
+const authRoutes = require("./routes/authRoutes");
 const workerRoutes = require("./routes/workerRoutes");
 
 const app = express();
@@ -21,10 +22,12 @@ app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
 
+app.use("/auth", authRoutes)
 app.use("/worker", workerRoutes)
-app.use("/plate", usuarioRoutes)
-app.use("/table", usuarioRoutes)
-app.use("/ingredient", usuarioRoutes)
+app.use("/menu", plateRoutes)
+app.use("/table", tableRoutes)
+app.use("/ingredient", ingredientRoutes)
+
 
 
 const PORT = process.env.PORT || 3000;

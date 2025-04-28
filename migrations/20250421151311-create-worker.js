@@ -22,6 +22,25 @@ module.exports = {
         type: Sequelize.FLOAT(10, 2),
         allowNull: false,
       },
+      email: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true, // Asegura que el email sea único
+        validate: {
+          isEmail: true, // Valida que el valor sea un email válido
+        },
+      },
+      password: {
+        type: Sequelize.STRING,
+        allowNull: false, // El password no puede ser nulo
+      },
+      phone_number: {
+        type: Sequelize.STRING,
+        allowNull: false, // El phone_number no puede ser nulo
+        validate: {
+          len: [10, 15], // Asegura que el teléfono tenga entre 10 y 15 caracteres
+        },
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,

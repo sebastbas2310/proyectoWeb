@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const pedidoController = require("../controller/pedidoController");
-const authService = require("../services/authService");
+const ingredientController = require("../controller/ingredientsController");
 
-router.post("/", authService, pedidoController.addPedido)
-router.get("/", authService, pedidoController.getPedido)
+router.post("/addIngredient", ingredientController.addIngredient)
+router.get("/", ingredientController.getIngredient)
 
 
-module.exports= router;
+module.exports= router; 
