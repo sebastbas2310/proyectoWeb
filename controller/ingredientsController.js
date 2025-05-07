@@ -6,11 +6,7 @@ const ingredientController={
     getIngredient : async(req,res) =>{
         try{
             const Ingredient = await ingredient.findAll()
-            res.status(200).json({
-                ok:true,    
-                status:200,
-                body: Ingredient
-            })   
+            res.status(200).json({Ingredient});   
         }catch(error){  
             return res.status(500).json({error: error.message})
         }
