@@ -1,14 +1,13 @@
-const { tr } = require("@faker-js/faker")
 const { ingredient } = require("../models")
-const { updateTable } = require("./tableContrroller")
 
 const ingredientController={
-    getIngredient : async(req,res) =>{
-        try{
-            const Ingredient = await ingredient.findAll()
-            res.status(200).json({Ingredient});   
-        }catch(error){  
-            return res.status(500).json({error: error.message})
+
+     getIngredient: async (req, res) => {
+    try {
+        const Ingredient = await ingredient.findAll();
+        res.status(200).json(Ingredient); // <--- Aquí ya mandas la lista directa
+        }catch (error) {
+        return res.status(500).json({ error: error.message });
         }
     },
 
@@ -35,15 +34,23 @@ const ingredientController={
         }
     },
 
-    updateIngredient:async(req,res) =>{
-        try{
-            const id = req.params.ingredient_id
-            const dataIngredient = req.body
+    updateIngredient: async (req, res) => {
+        try {
+            const id = req.params.ingredient_id; // ID del ingrediente recibido en la URL
+            const dataIngredient = req.body; // Datos recibidos en el cuerpo de la solicitud
+
+            // Verificar si el ingrediente existe
+            const ingredientExists = await ingredient.findByPk(id);
+            if (!ingredientExists) {
+                return res.status(404).json({ error: "Ingredient no encontrado" });
+            }
+
+            // Actualizar el ingrediente
             const updateIngredient = await ingredient.update(
                 {
                     ingredient_name: dataIngredient.ingredient_name,
                     ingredient_type: dataIngredient.ingredient_type,
-                    ingredient_cant: dataIngredient.ingredient_cant
+                    ingredient_cant: dataIngredient.ingredient_cant,
                 },
                 {
                     where: {
@@ -51,13 +58,16 @@ const ingredientController={
                     },
                 }
             );
+
             res.status(200).json({
                 ok: true,
                 status: 200,
+                message: "Ingrediente actualizado correctamente",
                 body: updateIngredient,
             });
-        }catch(error){
-            return res.status(500).json({error: error.message})
+        } catch (error) {
+            console.error("Error al actualizar ingrediente:", error);
+            return res.status(500).json({ error: error.message });
         }
     }
 
