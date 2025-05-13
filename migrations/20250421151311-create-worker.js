@@ -14,6 +14,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      worker_status: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       worker_rol: {
         type: Sequelize.STRING,
         allowNull: false,

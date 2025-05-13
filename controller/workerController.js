@@ -1,3 +1,4 @@
+const bcrypt = require("bcryptjs");
 const { worker } = require("../models")
 
 const workerController={
@@ -12,67 +13,132 @@ const workerController={
     },
 
     
-    addWorker: async (req, res) => {
-        await worker.sync();
-        try {
-          const dataWorker = req.body;
-      
-          // Aseguramos que los campos necesarios estén presentes
-          if (!dataWorker.worker_name || !dataWorker.worker_rol || !dataWorker.salary || !dataWorker.email || !dataWorker.password || !dataWorker.phone_number) {
-            return res.status(400).json({
-              ok: false,
-              status: 400,
-              message: "Faltan datos requeridos: worker_name, worker_rol, salary, email, password, phone_number"
-            });
-          }
-      
-          // Creación del trabajador con los nuevos campos
-          const createWorker = await worker.create({
-            worker_name: dataWorker.worker_name,
-            worker_rol: dataWorker.worker_rol,
-            salary: dataWorker.salary,
-            email: dataWorker.email,
-            password: dataWorker.password,
-            phone_number: dataWorker.phone_number
-          });
-      
-          res.status(201).json({
-            ok: true,
-            status: 201,
-            message: "Trabajador creado correctamente",
-            worker: createWorker // Puedes enviar la respuesta con los datos del trabajador recién creado
-          });
-      
-        } catch (error) {
-          return res.status(500).json({ error: error.message });
-        }
-      },
+   addWorker : async (req, res) => {
+    try {
+           const {
+      worker_name,
+      worker_rol,
+      salary,
+      email,
+      password,
+      phone_number,
+      worker_status,
+    } = req.body;
 
-    updateWorker:async (req,res) =>{
-        try{
-        const id = req.params.worker_id
-        const dataWorker = req.body
-        const updateWorker = await worker.update(
-            {
-            worker_name: dataWorker.worker_name,
-            worker_rol: dataWorker.worker_rol,
-            salary: dataWorker.salary   
-            },
-            {
-                where: {
-                    worker_id: id,
-                },
-            }
-        );
-        res.status(200).json({
-            ok: true,
-            status: 200,
-            body: updateWorker,
-        });
-        
-        }catch(error){
-            return res.status(500).json({error: error.message})
+        if (!password) {
+            return res.status(400).json({ error: "La contraseña es obligatoria" });
         }
+
+        hashedPassword = await bcrypt.hash(password, 10);
+
+         const workerExists = await worker.findOne({ where: { email } })
+         if (!workerExists) {
+            const newWorker = await worker.create({
+              worker_name,
+              worker_rol,
+              salary,
+              email,
+              password: hashedPassword, // Guardar la contraseña encriptada
+              phone_number,
+              worker_status: worker_status || "Activo", // Valor predeterminado si no se proporciona
+            });
+
+            return res.status(201).json(newWorker);
+         }
+
+         return res.status(400).json({error:"user already exist"})
+
+
+    } catch (error) {
+        res.status(500).json({ error: error.message, error_2 : error })
     }
+  },
+
+  
+    updateWorker: async (req, res) => {
+      try {
+        const { id } = req.params; // ID del trabajador recibido en la URL
+        const {
+          worker_name,
+          worker_rol,
+          salary,
+          email,
+          password,
+          phone_number,
+          worker_status,
+        } = req.body; // Datos recibidos en el cuerpo de la petición
+
+        // Buscar el trabajador por ID
+        const Worker = await worker.findByPk(id);
+        if (!Worker) {
+          return res.status(404).json({ message: "Trabajador no encontrado" });
+        }
+
+        // Actualizar los campos si se proporcionan
+        if (worker_name) Worker.worker_name = worker_name;
+        if (worker_rol) Worker.worker_rol = worker_rol;
+        if (salary) Worker.salary = salary;
+        if (email) Worker.email = email;
+        if (phone_number) Worker.phone_number = phone_number;
+        if (worker_status) Worker.worker_status = worker_status;
+
+        // Encriptar la contraseña si se proporciona una nueva
+        if (password) {
+          Worker.password = await bcrypt.hash(password, 10);
+        }
+
+        // Guardar los cambios en la base de datos
+        await Worker.save();
+
+        return res.status(200).json({
+          message: "Trabajador actualizado correctamente",
+          worker: Worker,
+        });
+      } catch (error) {
+        console.error("Error al actualizar trabajador:", error);
+        res.status(500).json({ error: "Error interno del servidor" });
+      }
+    },
+
+  changeWorkerStatus : async (req, res) => {
+    try {
+        const { id } = req.params; // ID del usuario recibido en la URL
+        const { estado } = req.body; // Estado recibido en el cuerpo de la petición
+
+        // Validar que el estado sea "Activo" o "Inactivo"
+        if (!["Activo", "Inactivo"].includes(estado)) {
+            return res.status(400).json({ error: "Estado inválido. Use 'Activo' o 'Inactivo'." });
+        }
+
+        // Buscar el usuario por ID
+        const usuario = await Usuario.findByPk(id);
+        if (!usuario) {
+            return res.status(404).json({ error: "worker no encontrado" });
+        }
+
+        // Actualizar el estado del usuario
+        usuario.estado = estado;
+        await usuario.save();
+
+        res.json({ message: `Estado actualizado a ${estado}`, usuario });
+      } catch (error) {
+        console.error("Error al cambiar estado:", error);
+        res.status(500).json({ error: "Error interno del servidor" });
+      }
+  },
+
+  getWorkerById : async (req, res) => {
+    try {
+        const { id } = req.params;
+        const Worker = await worker.findByPk(id);
+        if (!Worker) {
+            return res.status(404).json({ message: "worker no encontrado" });
+        }
+        return res.status(200).json(Worker);
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+
+  }
 }
-module.exports = workerController
+module.exports = workerController;
