@@ -2,17 +2,13 @@ const { plate } = require("../models");
 
 const PlateController ={
 
-    getPlate:async(req,res) =>{ 
-        try {
-            const Plate = await plate.findAll()
-            res.status(200).json({Plate});
-        } catch (error) {
-            res.status(500).json({
-                ok:false,
-                status:500,
-                message: error.message
-            })
-        }   
+    getPlate: async (req, res) => {
+    try {
+        const Plate = await plate.findAll();
+        res.status(200).json(Plate); // <--- Aquí ya mandas la lista directa
+        }catch (error) {
+        return res.status(500).json({ error: error.message });
+        }
     },
 
     addPlate:async (req,res) =>{

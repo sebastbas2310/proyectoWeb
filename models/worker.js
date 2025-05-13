@@ -20,6 +20,10 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      worker_status: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       worker_rol: {
         type: DataTypes.STRING,
         allowNull: false,
