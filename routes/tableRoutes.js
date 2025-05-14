@@ -5,6 +5,7 @@ const tableController = require("../controller/tableContrroller");
 
 router.get("/", tableController.getTable)
 router.post("/addTable", tableController.addTable)
+router.put("/updateTable/:table_id", tableController.updateTable)
 
 
 module.exports= router;
