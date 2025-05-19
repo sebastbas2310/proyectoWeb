@@ -13,9 +13,9 @@ const workerController={
     },
 
     
-   addWorker : async (req, res) => {
+    addWorker : async (req, res) => {
     try {
-           const {
+        const {
       worker_name,
       worker_rol,
       salary,
@@ -29,21 +29,19 @@ const workerController={
             return res.status(400).json({ error: "La contraseña es obligatoria" });
         }
 
-        hashedPassword = await bcrypt.hash(password, 10);
-
          const workerExists = await worker.findOne({ where: { email } })
          if (!workerExists) {
-            const newWorker = await worker.create({
-              worker_name,
-              worker_rol,
-              salary,
-              email,
-              password: hashedPassword, // Guardar la contraseña encriptada
-              phone_number,
-              worker_status: worker_status || "Activo", // Valor predeterminado si no se proporciona
+          const Worker = await worker.create({
+            worker_name,
+            worker_rol,
+            salary,
+            email,
+            password,
+            phone_number,
+            worker_status,
             });
 
-            return res.status(201).json(newWorker);
+            return res.status(201).json(Worker);
          }
 
          return res.status(400).json({error:"user already exist"})
@@ -52,7 +50,7 @@ const workerController={
     } catch (error) {
         res.status(500).json({ error: error.message, error_2 : error })
     }
-  },
+},
 
   
     updateWorker: async (req, res) => {
