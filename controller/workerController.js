@@ -29,9 +29,9 @@ const workerController={
             return res.status(400).json({ error: "La contraseña es obligatoria" });
         }
 
-        // const usuarioExists = await Usuario.findOne({ where: { email } })
-        // if (!usuarioExists) {
-          const usuario = await worker.create({
+         const workerExists = await worker.findOne({ where: { email } })
+         if (!workerExists) {
+          const Worker = await worker.create({
             worker_name,
             worker_rol,
             salary,
@@ -41,10 +41,10 @@ const workerController={
             worker_status,
             });
 
-            return res.status(201).json(usuario);
-        // }
+            return res.status(201).json(Worker);
+         }
 
-        // return res.status(400).json({error:"user already exist"})
+         return res.status(400).json({error:"user already exist"})
 
 
     } catch (error) {
