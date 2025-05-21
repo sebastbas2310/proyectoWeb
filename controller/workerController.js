@@ -29,6 +29,8 @@ const workerController={
             return res.status(400).json({ error: "La contraseña es obligatoria" });
         }
 
+        passwordH = await bcrypt.hash(password, 10);
+
          const workerExists = await worker.findOne({ where: { email } })
          if (!workerExists) {
           const Worker = await worker.create({
@@ -36,7 +38,7 @@ const workerController={
             worker_rol,
             salary,
             email,
-            password,
+            password : passwordH,
             phone_number,
             worker_status,
             });
